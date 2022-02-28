@@ -131,7 +131,7 @@ router.get('/getNoteTypeList.html', function (req, res) {
         if (!err) {
             res.send(data)
         } else {
-            res.send('获取失败')
+            res.send('取得失敗')
         }
     })
 })
@@ -143,7 +143,7 @@ router.get('/getNoteList.html', function (req, res) {
         if (!err) {
             res.send(data.reverse())
         } else {
-            res.send('获取失败')
+            res.send('取得失敗')
         }
     })
 })
@@ -271,7 +271,7 @@ router.post('/noteContribution_delete.html', function (req, res) {
 
 
 
-/* GET home page. */
+
 router.get('/', function (req, res, next) {
     res.render('index', { title: 'Express1' });
 });
