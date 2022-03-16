@@ -39,11 +39,11 @@
                 } else if (data == '1') {
                     alert('パスワードミス')
                 } else {
-                    alert('登録成功')
+                    alert('ログイン完了')
                     sessionStorage.setItem("userID", data.userID);
                     sessionStorage.setItem("username", data.username);
                     sessionStorage.setItem("_id", data._id);
-                    window.location.replace("./notetype_list.html");
+                    history.back()
                 }
             })
 

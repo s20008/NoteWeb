@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <title>つぶやき投稿画面</title>
+</head>
+
+<body>
+  <!-- 新建主便签 -->
+  <div>
+    <div class="login">
+      <h1>新規作成</h1>
+      <p class="title" value="'"></p>
+      <p class="content">内容 <textarea rows="10" cols="70"></textarea></p>
+
+      <p class="btn"><button class="creat">投稿</button></p>
+      <p class="btn"><button class="back">前へ</button></p>
+    </div>
+
+
+
+  </div>
+  <script src="../js/jquery/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    $('.title').html(`タイトル：` + window.sessionStorage.getItem('title'))
+
+
+    $('.creat').click(function () {
+      const content = $('textarea').val();
+      const userID = window.sessionStorage.getItem('userID');
+      const username = window.sessionStorage.getItem('username');
+      const note_title = window.sessionStorage.getItem('title');
+      const Note_id = window.sessionStorage.getItem('note_id');
+
+      $.post('/createNoteContribution', {
+        note_title,
+        content,
+        userID,
+        username,
+        Note_id,
+      }, function (data, status) {
+        if (!window.sessionStorage.getItem('userID')) {
+          alert('すみません、まだ未登録です')
+          window.location.href = '/login'
+          return
+        }
+        if (!status == 'success') {
+          alert('エラー')
+          return
+        }
+        if (data == '1') {
+          alert('投稿完了しました')
+          window.location.replace('/noteContent#' + window.sessionStorage.getItem('note_id'))
+        } else {
+          alert('投稿失敗しました')
+        }
+      })
+
+    })
+    $('.back').click(function () {
+      history.back()
+    })
+  </script>
+
+</body>
+
+<style>
+  .login {
+    width: 600px;
+    min-height: 400px;
+    border: 1px solid black;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: rgb(163, 165, 165);
+  }
+
+  .login h1 {
+    text-align: center;
+  }
+
+  .btn {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 20px;
+  }
+
+  .title {
+    margin-left: 30px;
+  }
+
+  .content {
+    margin-left: 20px;
+  }
+
+  button {
+    width: 120px;
+    height: 50px;
+    font-size: 20px;
+    margin: 0 auto;
+  }
+</style>
+
+</html>

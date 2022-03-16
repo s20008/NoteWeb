@@ -2,9 +2,6 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>つぶやき詳細一覧</title>
 </head>
 
@@ -15,17 +12,22 @@
     <p class="bq_type"></p>
 
     <p class="bz">
-      <span class="zx">最新50件</span>
+      <span class="zx"> 最新50件</span>
       /
       <span class="qb">全件表示</span>
       /
       <span class="xj">メッセージ投稿</span>
+
+      <span class="back">前へ</span>
     </p>
 
 
     <ul></ul>
 
   </div>
+
+
+
 
 
 
@@ -41,7 +43,7 @@
     let note_id = window.location.hash;
     note_id = note_id.split("#")[1];
     window.sessionStorage.setItem('note_id', note_id)
-    $.get('/getNnoteList.html?note_id=' + note_id, function (data, status) {
+    $.get('/getNnoteList?note_id=' + note_id, function (data, status) {
       $('.bq_type').text('タイトル：' + data.title);
       window.sessionStorage.setItem('title', data.title)
     })
@@ -52,7 +54,7 @@
     function showAll() {
       $('ul>div').remove()
       const j = new Promise(function (resolve, reject) {
-        $.get('/getContributionList.html?note_id=' + note_id, function (data, status) {
+        $.get('/getContributionList?note_id=' + note_id, function (data, status) {
           for (let i = 0; i < data.length; i++) {
             const username = data[i].username
             const content = data[i].content
@@ -72,15 +74,14 @@
             if (username[k].innerHTML.split('.')[1] == window.sessionStorage.getItem('username')) {
               deletebtn[k].onclick = function () {
                 const _id = deletebtn[k].getAttribute('value');
-                $.post('/noteContribution_delete.html', { _id }, function (data, error) {
+                $.post('/noteContribution_delete', { _id }, function (data, error) {
                   if (!window.sessionStorage.getItem('userID')) {
-                    alert('すみません、まだ未登録です。')
-                    window.location.href = './login.html'
+                    alert('すみません、まだ未登録です')
+                    window.location.href = './login'
                     return
                   }
                   if (error == 'success' && data == '1') {
                     showAll()
-                    alert('削除しました')
                   }
                 })
               }
@@ -95,7 +96,7 @@
     function showFifty() {
       $('ul>div').remove()
       const j = new Promise(function (resolve, reject) {
-        $.get('/getContribution_Fivety.html?note_id=' + note_id, function (data, status) {
+        $.get('/getContribution_Fivety?note_id=' + note_id, function (data, status) {
 
           $('.bq_type').text('タイトル：' + window.sessionStorage.getItem('title'));
           for (let i = 0; i < data.length; i++) {
@@ -117,7 +118,7 @@
             if (username[k].innerHTML.split('.')[1] == window.sessionStorage.getItem('username')) {
               deletebtn[k].onclick = function () {
                 const _id = deletebtn[k].getAttribute('value');
-                $.post('/noteContribution_delete.html', { _id }, function (data, error) {
+                $.post('/noteContribution_delete', { _id }, function (data, error) {
                   if (error == 'success' && data == '1') {
                     showFifty()
                     alert('削除しました')
@@ -140,20 +141,26 @@
 
     $('.xj').click(function () {
       if (!window.sessionStorage.getItem('userID')) {
-        window.location.href = './login.html'
+        window.location.href = './login'
         return
       }
       const title = $('.bq_type').html().split('：')[1]
       window.sessionStorage.setItem('title', title);
-      window.location.href = './create_contribution.html'
+      window.location.href = './create_contribution'
     })
 
     $('.qb').click(function () {
       showAll()
     })
+
+    $('.back').click(function () {
+      const type = window.sessionStorage.getItem('type');
+      window.location.href = '/noteDetails#' + type;
+    })
   </script>
 
 </body>
+
 
 <style>
   .note_list {
@@ -212,6 +219,11 @@
     position: relative;
     text-align: right;
     left: 530px;
+  }
+
+  .back {
+    float: right;
+    margin-right: 30px;
   }
 </style>
 
